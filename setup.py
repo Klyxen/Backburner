@@ -7,14 +7,14 @@ setup(
     install_requires=[
         "colorama>=0.4.6",
         "asyncio",
-        "ipaddress",  # For IP validation (redundant for Python >=3.3, but included for compatibility)
+        "ipaddress",
     ],
     author="Klyxen",
-    author_email="your-email@example.com",  # Replace with your email
+    author_email="your-email@example.com",
     description="A fast, asynchronous port scanner with banner grabbing and risk highlighting",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/Klyxen/Backburner",  # Updated to the correct repository URL
+    url="https://github.com/Klyxen/Backburner",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
