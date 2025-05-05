@@ -16,6 +16,7 @@ def display_banner() -> None:
     ╔════════════════════════════╗
           BACKBURNER
     ╚════════════════════════════╝
+    created bt : Ky1e/Klyxen
     """
     print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
 
