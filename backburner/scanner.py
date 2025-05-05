@@ -6,6 +6,8 @@ from contextlib import closing
 from .config import BackburnerConfig
 from .utils import print_message, parse_target, is_valid_target
 from colorama import Fore
+import random
+import time
 
 async def resolve_ip(target: str) -> Optional[str]:
     """Resolve a domain or IP to an IP address."""
@@ -26,12 +28,12 @@ async def grab_banner(ip: str, port: int, timeout: float = 1.5) -> Optional[str]
                 None, lambda: sock.connect((ip, port))
             )
             # Service-specific probes
-            if port in [80, 443, 8080, 8443, 8000, 8008, 8081, 8088, 8090, 8888, 9000, 9999]:
+            if port in [80, 443, 8080, 8443]:
                 sock.send(b"GET / HTTP/1.1\r\nHost: localhost\r\n\r\n")
-            elif port == 6379:  # Redis
-                sock.send(b"PING\r\n")
             elif port == 22:  # SSH
                 pass  # SSH sends banner automatically
+            elif port == 53:  # DNS
+                sock.send(b"\x00\xfc\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x01")
             banner = await asyncio.get_event_loop().run_in_executor(
                 None, lambda: sock.recv(1024).decode('utf-8', errors='ignore').strip()
             )
@@ -63,6 +65,9 @@ async def scan_port(
                     label = "HIGHLY vulnerable" if is_high_risk else "potentially vulnerable"
                     print_message(f"[+] Port {port} ({service}) is open - {label}{banner_info}", severity)
                     open_ports.append((port, service, banner))
+                else:
+                    # Random delay for stealth
+                    time.sleep(random.uniform(0.1, 0.5))
         except socket.error:
             pass  # Silently skip failed scans
 
@@ -87,7 +92,7 @@ async def scan_target_ports(target: str, config: BackburnerConfig) -> List[Tuple
     if not ip:
         return open_ports
 
-    print_message(f"[*] Scanning {total_ports} common ports for {ip}", Fore.LIGHTBLUE_EX)
+    print_message(f"[*] Scanning {total_ports} ports for {ip} in {'stealth' if config.STEALTH_MODE else 'normal'} mode", Fore.LIGHTBLUE_EX)
 
     # Create tasks for scanning ports
     tasks = [
