@@ -3,7 +3,7 @@ import argparse
 from .config import BackburnerConfig
 from .scanner import scan_target_ports
 from .utils import print_message, save_results
-from colorama import Fore
+from colorama import Fore, Style
 
 def display_banner() -> None:
     """Display the Backburner banner."""
@@ -22,10 +22,18 @@ async def run_scanner(args: argparse.Namespace) -> None:
     config.CONCURRENCY_LIMIT = args.concurrency
 
     if args.target:
-        # CLI mode: scan single target
-        open_ports = await scan_target_ports(args.target, config)
-        if open_ports and args.output:
-            save_results(open_ports, args.output)
+        # CLI mode: scan a single target
+        try:
+            open_ports = await scan_target_ports(args.target, config)
+            if open_ports:
+                print_message(f"[+] Scan completed for {args.target}", Fore.LIGHTGREEN_EX)
+                if args.output:
+                    save_results(open_ports, args.output)
+                    print_message(f"[+] Results saved to {args.output}", Fore.LIGHTCYAN_EX)
+            else:
+                print_message(f"[!] No open ports found for {args.target}", Fore.LIGHTYELLOW_EX)
+        except Exception as e:
+            print_message(f"[!] Error scanning target {args.target}: {e}", Fore.LIGHTRED_EX)
     else:
         # Interactive mode: loop for multiple targets
         while True:
@@ -40,10 +48,17 @@ async def run_scanner(args: argparse.Namespace) -> None:
                     continue
 
                 open_ports = await scan_target_ports(target, config)
-                if open_ports and args.output:
-                    save_results(open_ports, args.output)
+                if open_ports:
+                    print_message(f"[+] Scan completed for {target}", Fore.LIGHTGREEN_EX)
+                    print(f"{Fore.LIGHTCYAN_EX}Enter output file to save results (or press Enter to skip): ", end="")
+                    output_file = input().strip()
+                    if output_file:
+                        save_results(open_ports, output_file)
+                        print_message(f"[+] Results saved to {output_file}", Fore.LIGHTCYAN_EX)
+                else:
+                    print_message(f"[!] No open ports found for {target}", Fore.LIGHTYELLOW_EX)
             except KeyboardInterrupt:
-                print_message("[!] Scan interrupted", Fore.LIGHTRED_EX)
+                print_message("\n[!] Scan interrupted by user", Fore.LIGHTRED_EX)
                 break
             except Exception as e:
                 print_message(f"[!] Unexpected error: {e}", Fore.LIGHTRED_EX)
@@ -57,7 +72,12 @@ def main() -> None:
     parser.add_argument("--output", type=str, help="Output file for scan results (CSV format)")
     args = parser.parse_args()
 
-    asyncio.run(run_scanner(args))
+    try:
+        asyncio.run(run_scanner(args))
+    except KeyboardInterrupt:
+        print_message("\n[!] Program interrupted by user", Fore.LIGHTRED_EX)
+    except Exception as e:
+        print_message(f"[!] Fatal error: {e}", Fore.LIGHTRED_EX)
 
 if __name__ == "__main__":
     main()
