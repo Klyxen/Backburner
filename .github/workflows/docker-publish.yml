@@ -16,9 +16,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Get the latest tag version or initialize v1.0
       - name: Get latest tag
         id: get_tag
         run: |
@@ -30,23 +32,32 @@ jobs:
           else
             major=$(echo $latest_tag | cut -d. -f1 | cut -dv -f2)
             minor=$(echo $latest_tag | cut -d. -f2)
-            next_minor=$((minor + 1))
-            echo "v${major}.${next_minor}" > next_tag.txt
+            if [ "$minor" -ge 9 ]; then
+              next_major=$((major + 1))
+              echo "v${next_major}.0" > next_tag.txt
+            else
+              next_minor=$((minor + 1))
+              echo "v${major}.${next_minor}" > next_tag.txt
+            fi
           fi
           cat next_tag.txt
 
+      # Step 3: Set the new version as an environment variable
       - name: Set next tag as environment variable
         run: echo "NEXT_TAG=$(cat next_tag.txt)" >> $GITHUB_ENV
 
+      # Step 4: Set up Docker Buildx for multi-platform builds
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Step 5: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Step 6: Build and push the Docker image with the new version tag
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -57,6 +68,7 @@ jobs:
             klyxenn/backburner:${{ env.NEXT_TAG }}
             klyxenn/backburner:latest
 
+      # Step 7: Create a new Git tag
       - name: Tag the new version
         run: |
           git config user.name "GitHub Actions"
