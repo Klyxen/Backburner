@@ -14,14 +14,14 @@ def display_banner() -> None:
     """Display the Backburner banner."""
     banner = """
     ╔════════════════════════════╗
-          BACKBURNER v2.0
+          BACKBURNER v3.0
     ╚════════════════════════════╝
     """
     print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
 
-def format_port_output(port: int, status: str, service: str) -> str:
+def format_port_output(port: int, status: str, service: str, banner: str = None) -> str:
     """Format the port output."""
-    return f"[ {status} ] : {port} | {service}"
+    return f"[ {status} ] : {port} | {service}" + (f" | Banner: {banner}" if banner else "")
 
 async def run_scanner(args: argparse.Namespace) -> None:
     """Run the Backburner port scanner."""
@@ -30,13 +30,14 @@ async def run_scanner(args: argparse.Namespace) -> None:
     config = BackburnerConfig()
     config.TIMEOUT = args.timeout
     config.CONCURRENCY_LIMIT = args.concurrency
+    config.STEALTH_MODE = args.stealth
 
     def display_results(open_ports, target):
         """Display scan results in the desired format."""
         print_message(f"Scan results for {target}:", Fore.LIGHTCYAN_EX)
-        for port, service in config.get_ports():
-            status = "open" if port in open_ports else "closed"
-            print(format_port_output(port, status, service))
+        for port, service, banner in open_ports:
+            status = "open"
+            print(format_port_output(port, status, service, banner))
         print_message(f"[+] Scan completed for {target}", Fore.LIGHTGREEN_EX)
 
     if args.target:
@@ -77,11 +78,12 @@ async def run_scanner(args: argparse.Namespace) -> None:
 
 def main() -> None:
     """Parse arguments and run the scanner."""
-    parser = argparse.ArgumentParser(description="Backburner Port Scanner v2.0")
+    parser = argparse.ArgumentParser(description="Backburner Port Scanner v3.0")
     parser.add_argument("target", nargs="?", help="Target domain or IP (optional for interactive mode)")
     parser.add_argument("--timeout", type=float, default=1.5, help="Socket timeout in seconds")
     parser.add_argument("--concurrency", type=int, default=50, help="Concurrency limit for port scans")
     parser.add_argument("--output", type=str, help="Output file for scan results (CSV format)")
+    parser.add_argument("--stealth", action="store_true", help="Enable stealth mode for scans")
     args = parser.parse_args()
 
     try:
