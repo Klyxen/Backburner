@@ -14,7 +14,7 @@ def display_banner() -> None:
     """Display the Backburner banner."""
     banner = """
     ╔════════════════════════════╗
-          BACKBURNER v3.0
+          BACKBURNER
     ╚════════════════════════════╝
     """
     print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
