@@ -20,5 +20,5 @@ COPY . .
 # Install the Backburner package
 RUN pip install .
 
-# Set the entry point for the Backburner CLI
+# Expose the entry point for Backburner CLI
 ENTRYPOINT ["python", "-m", "backburner"]
