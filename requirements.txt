@@ -1,0 +1,6 @@
+# Core dependencies
+colorama>=0.4.6  # For colored console output
+asyncio          # For asynchronous operations
+
+# Optional dependencies for additional functionality
+ipaddress        # For IP address validation (built-in for Python 3.3+, but included for compatibility)
