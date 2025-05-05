@@ -22,6 +22,3 @@ RUN pip install .
 
 # Set the entry point for the Backburner CLI
 ENTRYPOINT ["backburner"]
-
-# Default command (interactive mode)
-CMD []
