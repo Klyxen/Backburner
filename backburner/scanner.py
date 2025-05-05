@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 from asyncio import Semaphore
 from contextlib import closing
 from .config import BackburnerConfig
-from .utils import print_message
+from .utils import print_message, parse_target, is_valid_target
 from colorama import Fore
 
 async def resolve_ip(target: str) -> Optional[str]:
@@ -39,7 +39,15 @@ async def grab_banner(ip: str, port: int, timeout: float = 1.5) -> Optional[str]
     except (socket.error, UnicodeDecodeError):
         return None
 
-async def scan_port(ip: str, port: int, service: str, is_high_risk: bool, open_ports: List[Tuple[int, str, Optional[str]]], semaphore: Semaphore, config: BackburnerConfig) -> None:
+async def scan_port(
+    ip: str,
+    port: int,
+    service: str,
+    is_high_risk: bool,
+    open_ports: List[Tuple[int, str, Optional[str]]],
+    semaphore: Semaphore,
+    config: BackburnerConfig
+) -> None:
     """Scan a single port and attempt banner grabbing if open."""
     async with semaphore:
         try:
@@ -48,7 +56,7 @@ async def scan_port(ip: str, port: int, service: str, is_high_risk: bool, open_p
                 result = await asyncio.get_event_loop().run_in_executor(
                     None, lambda: sock.connect_ex((ip, port))
                 )
-                if result == 0:
+                if result == 0:  # Port is open
                     banner = await grab_banner(ip, port, config.TIMEOUT)
                     banner_info = f" - {banner}" if banner else ""
                     severity = Fore.LIGHTRED_EX if is_high_risk else Fore.LIGHTGREEN_EX
@@ -64,9 +72,8 @@ async def scan_target_ports(target: str, config: BackburnerConfig) -> List[Tuple
     semaphore = Semaphore(config.CONCURRENCY_LIMIT)
     ports = config.PORTS
     total_ports = len(ports)
-    scanned_ports = 0
 
-    from .utils import parse_target, is_valid_target
+    # Validate and resolve the target
     try:
         hostname = parse_target(target)
         if not is_valid_target(hostname):
@@ -81,14 +88,18 @@ async def scan_target_ports(target: str, config: BackburnerConfig) -> List[Tuple
         return open_ports
 
     print_message(f"[*] Scanning {total_ports} common ports for {ip}", Fore.LIGHTBLUE_EX)
-    tasks = []
-    for port, service, is_high_risk in ports:
-        tasks.append(scan_port(ip, port, service, is_high_risk, open_ports, semaphore, config))
-        scanned_ports += 1
-        if scanned_ports % 20 == 0:
-            print_message(f"[*] Scanned {scanned_ports}/{total_ports} ports", Fore.LIGHTBLUE_EX)
 
-    await asyncio.gather(*tasks)
+    # Create tasks for scanning ports
+    tasks = [
+        scan_port(ip, port, service, is_high_risk, open_ports, semaphore, config)
+        for port, service, is_high_risk in ports
+    ]
+
+    # Progress feedback
+    for i in range(0, len(tasks), 20):
+        await asyncio.gather(*tasks[i:i + 20])
+        print_message(f"[*] Scanned {min(i + 20, total_ports)}/{total_ports} ports", Fore.LIGHTBLUE_EX)
+
     if not open_ports:
         print_message("[!] No open ports found", Fore.LIGHTYELLOW_EX)
 
