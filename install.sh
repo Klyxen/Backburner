@@ -68,9 +68,11 @@ install_python() {
     fi
     cd "$REPO_DIR" || error "Failed to enter repository directory."
 
-    # Install colorama
-    info "Installing colorama..."
-    pip3 install colorama>=0.4.6 || error "Failed to install colorama."
+    # Install dependencies from requirements.txt
+    if [ -f "requirements.txt" ]; then
+        info "Installing dependencies from requirements.txt..."
+        pip3 install -r requirements.txt || error "Failed to install dependencies."
+    fi
 
     # Install Backburner as a package
     info "Installing Backburner package..."
