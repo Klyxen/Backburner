@@ -17,9 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire project into the container
 COPY . .
 
-# Install the Backburner package
-RUN pip install .
-
 # Expose the entry point for Backburner CLI
 ENTRYPOINT ["python", "-m", "backburner.cli"]
 
