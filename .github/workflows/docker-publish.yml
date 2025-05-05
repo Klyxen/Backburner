@@ -17,14 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Get the latest tag version
+      # Step 2: Get the latest tag version or initialize v1.0
       - name: Get latest tag
         id: get_tag
         run: |
           git fetch --tags
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0")
           echo "Latest tag: $latest_tag"
-          if [ -z "$latest_tag" ]; then
+          if [ "$latest_tag" = "v0.0" ]; then
             echo "v1.0" > next_tag.txt
           else
             major=$(echo $latest_tag | cut -d. -f1 | cut -dv -f2)
@@ -33,7 +33,6 @@ jobs:
             echo "v${major}.${next_minor}" > next_tag.txt
           fi
           cat next_tag.txt
-        shell: bash
 
       # Step 3: Set the new version as an environment variable
       - name: Set next tag as environment variable
