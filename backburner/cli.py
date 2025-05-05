@@ -17,13 +17,13 @@ def clear_terminal() -> None:
 def display_banner() -> None:
     """Display the Backburner banner."""
     banner = """
-    _--____-__---____---______----____-___-_____-____/
+    _--____-__---____---______----____-___-_____-____-----___`.
     ╔════════════════════════════╗
           BACKBURNER
     ╚════════════════════════════╝
     created bt : Ky1e/Klyxen
 
-    --__----_--___----___------____---_---_-----_---_/
+    --__----_--___----___------____---_---_-----_----_____---`.
     """
 
     print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
@@ -107,4 +107,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
