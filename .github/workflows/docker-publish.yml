@@ -36,6 +36,7 @@ jobs:
           else
             echo "No relevant changes detected. Skipping build."
             echo "SHOULD_BUILD=false" >> $GITHUB_ENV
+          fi
 
       # Step 3: Exit early if no relevant changes
       - name: Exit if no relevant changes
