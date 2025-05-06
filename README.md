@@ -4,7 +4,6 @@
 ___
 
 ### What's New:
-- **Version** : 2.3
 - **Color-coded output** : Easily identify open and closed ports with green and red colors.
 - **Improved Docker support** : Seamless integration in containerized environments for simple deployment.
 - **Optimized performance** : Faster scanning, particularly for larger port ranges, thanks to improved multithreading.
