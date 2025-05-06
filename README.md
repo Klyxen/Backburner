@@ -61,8 +61,6 @@ Server: Apache/2.4.7 (Ubuntu)
 Accept-Ranges:
 
 [+] Scan completed for scanme.nmap.org
-![Screenshot 2025-05-05 182300](https://github.com/user-attachments/assets/06863a71-f1dc-4a90-a7fa-58cbe4f0cead)
-
 ```
 
 ___
