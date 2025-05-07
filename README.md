@@ -15,7 +15,7 @@ ___
 ___
 ### How to Use:
 1. **Run the following Docker command (terminal/linux)** to start the tool :
-   - `docker run -it klyxen/backburner:v2.7` 
+   - `docker run -it klyxen/backburner:v3.0` 
    
 2. **Enter the target IP or website** when prompted. `(e.g., scanme.nmap.org)`
 
@@ -23,7 +23,7 @@ ___
 
 ### Example :
 ```
-docker run -it klyxen/backburner:v2.3
+docker run -it klyxen/backburner:v3.0
 Then, type the target (e.g., scanme.nmap.org) and see the results displayed in a color-coded format.
 ```
 ### Output
