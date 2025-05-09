@@ -28,7 +28,6 @@ def display_banner() -> None:
     [   q : exit   |   m : modes   |--------------------------
 
 
-    
     """
 
     print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
