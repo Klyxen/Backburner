@@ -26,10 +26,9 @@ def display_banner() -> None:
     [   q : quit   |   m : modes   | -------------------------
 
 
-    
     """
 
-    print_message(Fore.YELLOW + Style.BRIGHT + banner + Style.RESET_ALL)
+    print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
 
 
 def format_port_output(port: int, status: str, service: str, banner: str = None) -> str:
@@ -69,17 +68,17 @@ async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> Non
         # Interactive mode: loop for multiple targets
         while True:
             try:
-                print(f"{Fore.LIGHTYELLOW_EX}Enter Target [ domain : IP ] : {Style.RESET_ALL}", end="")
+                print(f"{Fore.RED}Enter Target [ domain : IP ] : {Style.RESET_ALL}", end="")
                 target = input().strip()
                 if target.lower() == 'q':
-                    print_message("[+] Exiting Backburner. Goodbye!\n", Fore.LIGHTCYAN_EX)
+                    print_message("[+] Exiting Backburner. Goodbye!\n", Fore.RED)
                     break
                 if target.lower() == 'm':
                     # Change mode
                     print_message("\nModes : ", Fore.LIGHTCYAN_EX)
-                    print_message("[ 0 ] : Ghost scan", Fore.LIGHTGREEN_EX)
-                    print_message("[ 1 ] : Stealth scan", Fore.LIGHTYELLOW_EX)
-                    print_message("[ 2 ] : Normal scan", Fore.LIGHTRED_EX)
+                    print_message("[ 0 ] : Ghost scan", Fore.BLACK)
+                    print_message("[ 1 ] : Stealth scan", Fore.RED)
+                    print_message("[ 2 ] : Normal scan", Fore.YELLOW)
                     print(f"{Fore.LIGHTCYAN_EX}: {Style.RESET_ALL}", end="")
                     mode_choice = input().strip()
                     if mode_choice in ['0', '1', '2']:
