@@ -28,7 +28,7 @@ def display_banner() -> None:
     --__----_--___----___------____---_---_-----_----_____---`.
     """
 
-    print_message(Fore.YELLOW + Style.BRIGHT + banner + Style.RESET_ALL)
+    print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
 
 
 def format_port_output(port: int, status: str, service: str, banner: str = None) -> str:
@@ -72,7 +72,7 @@ async def run_scanner(args: argparse.Namespace) -> None:
         # Interactive mode: loop for multiple targets
         while True:
             try:
-                print(f"{Fore.LIGHTYELLOW_EX}Enter Target [ domain : IP | q to quit ] : {Style.RESET_ALL}", end="")
+                print(f"{Fore.YELLOW}Enter Target [ domain : IP | q to quit ] : ", end="")
                 target = input().strip()
                 if target.lower() == 'q':
                     print_message("[+] Exiting Backburner. Goodbye!\n", Fore.LIGHTCYAN_EX)
