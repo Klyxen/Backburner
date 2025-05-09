@@ -58,6 +58,7 @@ class BackburnerConfig:
     TIMEOUT: float = 1.5          # Socket timeout in seconds
     CONCURRENCY_LIMIT: int = 50   # Max concurrent port scans
     CURRENT_MODE: int = 2         # Default mode is "Normal scan"
+    STEALTH_MODE: bool = False    # Default is not stealth mode
 
     def set_mode(self, mode: int) -> None:
         """Set the scanning mode."""
@@ -74,12 +75,15 @@ class BackburnerConfig:
         if self.CURRENT_MODE == 0:  # Ghost scan
             self.TIMEOUT = 3.0
             self.CONCURRENCY_LIMIT = 20
+            self.STEALTH_MODE = True
         elif self.CURRENT_MODE == 1:  # Stealth scan
             self.TIMEOUT = 2.0
             self.CONCURRENCY_LIMIT = 35
+            self.STEALTH_MODE = True
         elif self.CURRENT_MODE == 2:  # Normal scan
             self.TIMEOUT = 1.5
             self.CONCURRENCY_LIMIT = 50
+            self.STEALTH_MODE = False
 
     @classmethod
     def get_ports(cls, high_risk_only: bool = False) -> List[Tuple[int, str]]:
