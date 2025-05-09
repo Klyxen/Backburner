@@ -33,7 +33,7 @@ def display_banner() -> None:
 
 def format_port_output(port: int, status: str, service: str, banner: str = None) -> str:
     """Format the port output for terminal display."""
-    service_color = Fore.LIGHTCYAN_EX if "HTTP" in service else Fore.LIGHTYELLOW_EX
+    service_color = Fore.LIGHTCYAN_EX if "HTTP" in service else Fore.RED
     return (
         f"{Fore.LIGHTGREEN_EX}[ {status.upper()} ]{Style.RESET_ALL} : "
         f"{Fore.LIGHTWHITE_EX}{port}{Style.RESET_ALL} | {service_color}{service}{Style.RESET_ALL}"
@@ -48,14 +48,14 @@ async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> Non
 
     def display_results(open_ports, target):
         """Display scan results in a categorized and color-coded format."""
-        print_message(f"\n{Fore.LIGHTCYAN_EX}Scan results for {target}:{Style.RESET_ALL}", Fore.LIGHTCYAN_EX)
+        print_message(f"\n{Fore.LIGHTCYAN_EX}Scan results for {target}:{Style.RESET_ALL}", Fore.RED)
         if open_ports:
             for port, service, banner in open_ports:
                 status = "open"
                 print(format_port_output(port, status, service, banner))
-            print_message(f"\n{Fore.LIGHTGREEN_EX}[+] Scan completed for {target}\n", Fore.LIGHTGREEN_EX)
+            print_message(f"\n{Fore.LIGHTGREEN_EX}[+] Scan completed for {target}\n", Fore.GREEN)
         else:
-            print_message(f"{Fore.LIGHTYELLOW_EX}[!] No open ports found for {target}\n", Fore.LIGHTYELLOW_EX)
+            print_message(f"{Fore.LIGHTRED_EX}[!] No open ports found for {target}\n", Fore.RED)
 
     if args.target:
         # CLI mode: scan a single target
@@ -75,7 +75,7 @@ async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> Non
                     break
                 if target.lower() == 'm':
                     # Change mode
-                    print_message("\nModes : ", Fore.LIGHTCYAN_EX)
+                    print_message("\nModes : ", Fore.RED)
                     print_message("[ 0 ] : Ghost scan", Fore.BLACK)
                     print_message("[ 1 ] : Stealth scan", Fore.RED)
                     print_message("[ 2 ] : Normal scan", Fore.YELLOW)
@@ -83,7 +83,7 @@ async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> Non
                     mode_choice = input().strip()
                     if mode_choice in ['0', '1', '2']:
                         config.set_mode(int(mode_choice))
-                        print_message(f"[+] Mode set to {config.get_current_mode()}", Fore.LIGHTCYAN_EX)
+                        print_message(f"[+] Mode set to {config.get_current_mode()}", Fore.RED)
                     else:
                         print_message(f"[!] Invalid mode choice. Please try again.", Fore.LIGHTRED_EX)
                     continue
