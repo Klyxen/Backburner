@@ -5,8 +5,6 @@ from .config import BackburnerConfig
 from .scanner import scan_target_ports
 from .utils import print_message
 from colorama import Fore, Style
-import random
-import time
 
 
 def clear_terminal() -> None:
@@ -25,12 +23,13 @@ def display_banner() -> None:
     )(  )  ()   )    (     )(     (   )    (    )   (  (    ))
       )(   )(  (      )   (  )     ) (      )  (     )  )  ((
      (  ) (  )  )    )     ))     (  )     (    )   )  )   ))
-    [   q : exit   |   m : modes   |--------------------------
+    [   q : quit   |   m : modes   | -------------------------
 
 
+    
     """
 
-    print_message(Fore.LIGHTRED_EX + Style.BRIGHT + banner + Style.RESET_ALL)
+    print_message(Fore.YELLOW + Style.BRIGHT + banner + Style.RESET_ALL)
 
 
 def format_port_output(port: int, status: str, service: str, banner: str = None) -> str:
@@ -43,14 +42,10 @@ def format_port_output(port: int, status: str, service: str, banner: str = None)
     )
 
 
-async def run_scanner(args: argparse.Namespace) -> None:
+async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> None:
     """Run the Backburner port scanner."""
     clear_terminal()
     display_banner()
-    config = BackburnerConfig()
-    config.TIMEOUT = args.timeout
-    config.CONCURRENCY_LIMIT = args.concurrency
-    config.STEALTH_MODE = args.stealth
 
     def display_results(open_ports, target):
         """Display scan results in a categorized and color-coded format."""
@@ -74,11 +69,25 @@ async def run_scanner(args: argparse.Namespace) -> None:
         # Interactive mode: loop for multiple targets
         while True:
             try:
-                print(f"{Fore.RED}Enter Target [ domain | IP ] : ", end="")
+                print(f"{Fore.LIGHTYELLOW_EX}Enter Target [ domain : IP ] : {Style.RESET_ALL}", end="")
                 target = input().strip()
                 if target.lower() == 'q':
                     print_message("[+] Exiting Backburner. Goodbye!\n", Fore.LIGHTCYAN_EX)
                     break
+                if target.lower() == 'm':
+                    # Change mode
+                    print_message("\nModes : ", Fore.LIGHTCYAN_EX)
+                    print_message("[ 0 ] : Ghost scan", Fore.LIGHTGREEN_EX)
+                    print_message("[ 1 ] : Stealth scan", Fore.LIGHTYELLOW_EX)
+                    print_message("[ 2 ] : Normal scan", Fore.LIGHTRED_EX)
+                    print(f"{Fore.LIGHTCYAN_EX}: {Style.RESET_ALL}", end="")
+                    mode_choice = input().strip()
+                    if mode_choice in ['0', '1', '2']:
+                        config.set_mode(int(mode_choice))
+                        print_message(f"[+] Mode set to {config.get_current_mode()}", Fore.LIGHTCYAN_EX)
+                    else:
+                        print_message(f"[!] Invalid mode choice. Please try again.", Fore.LIGHTRED_EX)
+                    continue
                 if not target:
                     print_message(f"{Fore.LIGHTRED_EX}[!] Target cannot be empty.\n", Fore.LIGHTRED_EX)
                     continue
@@ -101,8 +110,10 @@ def main() -> None:
     parser.add_argument("--stealth", action="store_true", help="Enable stealth mode for scans")
     args = parser.parse_args()
 
+    config = BackburnerConfig()  # Default configuration
+
     try:
-        asyncio.run(run_scanner(args))
+        asyncio.run(run_scanner(args, config))
     except KeyboardInterrupt:
         print_message(f"\n{Fore.LIGHTRED_EX}[!] Program interrupted by user.\n", Fore.LIGHTRED_EX)
     except Exception as e:
