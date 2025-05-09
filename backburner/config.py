@@ -3,6 +3,9 @@ from typing import List, Tuple
 class BackburnerConfig:
     """Configuration for the Backburner port scanner."""
 
+    # List of scanning modes
+    MODES = ["Ghost scan", "Stealth scan", "Normal scan"]
+
     # List of ports to scan: (port number, service name, high risk flag)
     PORTS: List[Tuple[int, str, bool]] = [
         # Web and Proxy Services (common, often secure)
@@ -54,6 +57,29 @@ class BackburnerConfig:
     # Default configuration values
     TIMEOUT: float = 1.5          # Socket timeout in seconds
     CONCURRENCY_LIMIT: int = 50   # Max concurrent port scans
+    CURRENT_MODE: int = 2         # Default mode is "Normal scan"
+
+    def set_mode(self, mode: int) -> None:
+        """Set the scanning mode."""
+        if 0 <= mode < len(self.MODES):
+            self.CURRENT_MODE = mode
+            self.adjust_settings_based_on_mode()
+
+    def get_current_mode(self) -> str:
+        """Get the current scanning mode as a string."""
+        return self.MODES[self.CURRENT_MODE]
+
+    def adjust_settings_based_on_mode(self) -> None:
+        """Adjust configuration settings based on the selected mode."""
+        if self.CURRENT_MODE == 0:  # Ghost scan
+            self.TIMEOUT = 3.0
+            self.CONCURRENCY_LIMIT = 20
+        elif self.CURRENT_MODE == 1:  # Stealth scan
+            self.TIMEOUT = 2.0
+            self.CONCURRENCY_LIMIT = 35
+        elif self.CURRENT_MODE == 2:  # Normal scan
+            self.TIMEOUT = 1.5
+            self.CONCURRENCY_LIMIT = 50
 
     @classmethod
     def get_ports(cls, high_risk_only: bool = False) -> List[Tuple[int, str]]:
