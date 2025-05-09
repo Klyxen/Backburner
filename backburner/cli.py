@@ -72,7 +72,7 @@ async def run_scanner(args: argparse.Namespace) -> None:
         # Interactive mode: loop for multiple targets
         while True:
             try:
-                print(f"{Fore.YELLOW}Enter Target [ domain : IP | q to quit ] : ", end="")
+                print(f"{Fore.RED}Enter Target [ domain : IP | q to quit ] : ", end="")
                 target = input().strip()
                 if target.lower() == 'q':
                     print_message("[+] Exiting Backburner. Goodbye!\n", Fore.LIGHTCYAN_EX)
