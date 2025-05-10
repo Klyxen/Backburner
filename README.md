@@ -12,19 +12,9 @@ ___
 ### Enhancements :
 - **Clean terminal output** : Results are now more readable with better formatting.
 - **Multithreaded scanning** : Faster scanning of multiple ports for improved efficiency.
-___
-### How to Select Modes
-1. **Syntax** : simply just type `m` in your terminal and choose the mode you want.
-
-```
-Modes : 
-[ 0 ] : Ghost scan
-[ 1 ] : Stealth scan
-[ 2 ] : Normal scan
-: 
-```
 
 ___
+
 ### How to run Backburner :
 1. **Run the following Docker command (terminal/linux)** to start the tool :
    - `docker run -it klyxen/backburner:v4.2` 
@@ -35,13 +25,13 @@ ___
 
 ### Example :
 ```
-docker run -it klyxen/backburner:v3.0
+docker run -it klyxen/backburner:v4.2
 Then, type the target (e.g., scanme.nmap.org) and see the results displayed in a color-coded format.
 ```
 ### Output
 ```
 
-    _--____-__---____---______----____-___-_____-____-----___`.
+   _--____-__---____---______----____-___-_____-____-----___`.
     ╔════════════════════════════╗
           BACKBURNER
     ╚════════════════════════════╝          `               `
@@ -78,6 +68,20 @@ Accept-Ranges:
 Enter Target [ domain : IP ] : 
 ```
 ___
+
+### How to Select Modes
+1. **Syntax** : simply just type `m` in your terminal and choose the mode you want.
+
+```
+Modes : 
+[ 0 ] : Ghost scan
+[ 1 ] : Stealth scan
+[ 2 ] : Normal scan
+: 
+```
+
+___
+
 
 ### Tags to use [ old/new ]
 
