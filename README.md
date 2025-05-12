@@ -17,7 +17,7 @@ ___
 
 ### How to run Backburner :
 1. **Run the following Docker command (terminal/linux)** to start the tool :
-   - `docker run -it klyxen/backburner:v4.2` 
+   - `docker run -it klyxen/backburner:v4.7` 
    
 2. **Enter the target IP or website** when prompted. `(e.g., scanme.nmap.org)`
 
@@ -25,7 +25,7 @@ ___
 
 ### Example :
 ```
-docker run -it klyxen/backburner:v4.2
+docker run -it klyxen/backburner:v4.7
 Then, type the target (e.g., scanme.nmap.org) and see the results displayed in a color-coded format.
 ```
 ### Output
@@ -85,7 +85,7 @@ ___
 
 ### Tags to use [ old/new ]
 
-- `v4.2`
+- `v4.7`
 - `v3.0`
 - `v2.9`
 - `v1.0`
