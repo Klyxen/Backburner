@@ -87,26 +87,6 @@ async def run_scanner(args: argparse.Namespace, config: BackburnerConfig) -> Non
                     else:
                         print_message(f"[!] Invalid mode choice. Please try again.", Fore.LIGHTRED_EX)
                     continue
-                if target.lower() == 'v':
-                    print_message("\n[ 0 ] old - [ 3 ] Latest | Versions", Fore.LIGHTCYAN_EX)
-                    print_message("_____________________", Fore.WHITE)
-                    print_message("\n[ 3 ] : v4.2\n[ 2 ] : v3.0\n[ 1 ] : v2.9\n[ 0 ] : v1.0\n", Fore.LIGHTCYAN_EX)
-                    print_message("_____________________\n", Fore.WHITE)
-                    print(f"{Fore.LIGHTMAGENTA_EX}Choose version to run: {Style.RESET_ALL}", end="")
-                    version_choice = input().strip()
-                    version_map = {
-                        '0': 'v1.0',
-                        '1': 'v2.9',
-                        '2': 'v3.0',
-                        '3': 'v4.2'
-                    }
-                    if version_choice in version_map:
-                        version = version_map[version_choice]
-                        print_message(f"\n[+] Running Docker container for Backburner {version}...\n", Fore.YELLOW)
-                        os.system(f"docker run -it klyxenn/backburner:{version}")
-                    else:
-                        print_message(f"[!] Invalid version choice.\n", Fore.LIGHTRED_EX)
-                    continue
                 if not target:
                     print_message(f"{Fore.LIGHTRED_EX}[!] Target cannot be empty.\n", Fore.LIGHTRED_EX)
                     continue
